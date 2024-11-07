@@ -1,0 +1,22 @@
+
+
+events are basically time slot of the day
+there would be the following static events:
+breakfast(optional) , morning-classes, lunch, afternoon-classes, class-end activity
+
+
+Event struct : 
+    Place(Enum) place : #i.e basketball court, football, canteen
+    Heroine(struct) girl : #enum with the girls as choices
+    Event(struct) next : 
+
+
+Dialogue struct:
+    char text[200];
+    Dialogue(struct) choices[3];
+
+
+heroine_list = #array containing the structs for the heroine
+a newly entered Event, randomizes the Place as well as the pointer to its heroine
+heroines are randomized by randomizing a number between 0-2 (inclusive) and getting the pointer inside the herone_list using the index that is randomized(0-2)
+
