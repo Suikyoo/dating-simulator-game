@@ -5,13 +5,13 @@ there would be the following static events:
 breakfast(optional) , morning-classes, lunch, afternoon-classes, class-end activity
 
 
-Event struct : 
+struct Event: 
     Place(Enum) place : #i.e basketball court, football, canteen
     Heroine(struct) girl : #enum with the girls as choices
     Event(struct) next : 
 
 
-Dialogue struct:
+struct Dialogue:
     char text[200];
     Dialogue(struct) choices[3];
 
