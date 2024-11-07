@@ -38,7 +38,7 @@ struct Dialogue {
 
 struct Heroine {
     Dialogue* dialogue;
-    int love_meter = 0;
+    int love_meter;
     STATUS status;
 
 };
@@ -59,9 +59,40 @@ Event* get_next_event(Event* event) {
     return event->next;
 }
 
+Event* create_event() {
+    Event* ptr = (Event*) malloc(sizeof(Event));
+    ptr->heroine = NULL;
+    ptr->next = NULL;
+
+    return ptr;
+}
+
+void delete_events(Event* event) {
+    Event* ptr = event;
+    while (ptr != NULL) {
+        Event* temp = ptr->next;
+        free(ptr);
+        ptr = temp;
+    }
+}
 
 int main(){
     srand(time(NULL));
+    int days;
+    Event* current_event;
+
+    //initialize the starting events to form a loop
+
+
+    //initialize the values for the declared variables
+
+    while (1==1) {
+        //do something
+
+
+
+        current_event = current_event->next;
+    }
 
     return 0;
 
