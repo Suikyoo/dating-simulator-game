@@ -48,12 +48,14 @@ struct Dialogue {
 struct Choice {
     char text[MAX_STRLEN];
     int intimacy_gain;
-    Dialogue* dialogue;
+    Dialogue* next;
 };
 
 struct Heroine {
-    Dialogue* dialogue;
+    char name[MAX_STRLEN];
     int love_meter;
+
+    Dialogue** dialogue_list;
     STATUS status;
 
 };
@@ -88,10 +90,19 @@ Event* create_event() {
 }
 
 Event* initialize_events() {
-    Event* event = create_event();
+    Event* morning = create_event();
+    Event* noon = create_event();
+    Event* afternoon = create_event();
+    Event* evening = create_event();
+
+    morning->next = noon;
+    noon->next = afternoon;
+    afternoon->next = evening;
+    evening->next = morning;
+
     //chain it
 
-    return event;
+    return morning;
 
 }
 
@@ -107,7 +118,16 @@ void delete_events(Event* event) {
 //heroine functions
 Heroine* initialize_heroines() {
     Heroine* heroine_list = (Heroine*) malloc(sizeof(Heroine) * HEROINE_AMT);
+    for (int i=0; i<HEROINE_AMT; i++) {
+        heroine_list[i].love_meter = 0;
+
+    }
+
     //create the heroines here
+    strncpy(heroine[0].name, "Andre", MAX_STRLEN);
+    heroine[
+    
+
 
     return heroine_list;
 
@@ -123,13 +143,12 @@ Dialogue* create_dialogue() {
     Dialogue* dialogue = (Dialogue*) malloc(sizeof(Dialogue));
     dialogue->choices[0] = NULL;
     dialogue->choices[1] = NULL;
-    return dialogue
+    return dialogue;
 }
 
 //should probably put this on a separate function group
 Choice* create_choice() {
     Choice* choice = (Choice*) malloc(sizeof(Choice));
-    choice
     return choice;
 }
 
@@ -154,22 +173,24 @@ Dialogue** initialize_dialogues() {
     strncpy(dialogue->choices[0]->text, "sup homie", MAX_STRLEN);
     strncpy(dialogue->choices[1]->text, "nah idk you", MAX_STRLEN);
 
-    //set choice gains 
-    dialogue->choices[0]->intimacy_gain = 20
-    dialogue->choices[1]->intimacy_gain = -20
 
     //set to dialogue list
     dialogue_list[0] = dialogue;
 
+    //link these dialogues to the choices
     dialogue = create_dialogue();
 
-    strncpy(dialogue->text, "eyoo sup homie", MAX_STRLEN);
-    dialoguelist[0]->choices[0]->dialogue = dialogue
+    strncpy(dialogue->text, "eyoo sup bows", MAX_STRLEN);
+    dialogue_list[0]->choices[0]->next = dialogue;
     
     dialogue = create_dialogue();
 
     strncpy(dialogue->text, "oa", MAX_STRLEN);
-    dialoguelist[0]->choices[1]->dialogue = dialogue
+    dialogue_list[0]->choices[1]->next = dialogue;
+
+    //set choice gains 
+    dialogue->choices[0]->intimacy_gain = 20;
+    dialogue->choices[1]->intimacy_gain = -20;
 
     return dialogue_list;
 }
@@ -182,7 +203,7 @@ int use_dialogue(Heroine* heroine, Dialogue* dialogue) {
 
     gain = 0;
 
-    if (dialogue->choice[0] != NULL && dialogue->choice[1]  != NULL) {
+    if (dialogue->choices[0] != NULL && dialogue->choices[1]  != NULL) {
 
         printf("%s: %s\n", heroine->name, dialogue->text);
         printf("X: %s\n", dialogue->choice[0]->text);
