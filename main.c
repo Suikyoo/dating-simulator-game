@@ -3,9 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <conio.h>
 
 #define HEROINE_AMT 1
 #define MAX_STRLEN 200
+#define MIN_STRLEN 30
 
 enum PLACE;
 enum STATUS;
@@ -52,8 +54,8 @@ struct Choice {
 };
 
 struct Heroine {
-    char name[MAX_STRLEN];
-    int love_meter;
+    char name[MIN_STRLEN];
+    int intimacy;
 
     Dialogue** dialogue_list;
     STATUS status;
@@ -61,10 +63,17 @@ struct Heroine {
 };
 
 struct Event {
+    char name[MIN_STRLEN];
     PLACE place;
     Heroine* heroine;
     Event* next;
 };
+
+//clrscr function
+
+void clear() {
+    printf("\033[H\033[J");
+}
 
 //randomizer functions
 
@@ -74,6 +83,27 @@ int random_up_to(int value) {
 
 }
 
+//enum functions
+
+void get_str_from_place(int place, char* string) {
+    switch (place) {
+        case CAFETERIA:
+            strncpy(string, "CAFETERIA", MIN_STRLEN);
+            break;
+
+        case PLAZA:
+            strncpy(string, "PLAZA", MIN_STRLEN);
+            break;
+
+        case HOUSE:
+            strncpy(string, "HOUSE", MIN_STRLEN);
+            break;
+
+        default:
+            strncpy(string, "NONE", MIN_STRLEN);
+    }
+}
+
 //event functions
 void connect_events(Event* before, Event* after) {
     Event* temp = before->next;
@@ -81,19 +111,20 @@ void connect_events(Event* before, Event* after) {
     after->next = temp;
 }
 
-Event* create_event() {
+Event* create_event(char* name) {
     Event* ptr = (Event*) malloc(sizeof(Event));
     ptr->heroine = NULL;
     ptr->next = NULL;
+    strncpy(ptr->name, name, MIN_STRLEN);
 
     return ptr;
 }
 
 Event* initialize_events() {
-    Event* morning = create_event();
-    Event* noon = create_event();
-    Event* afternoon = create_event();
-    Event* evening = create_event();
+    Event* morning = create_event("MORNING");
+    Event* noon = create_event("NOON");
+    Event* afternoon = create_event("AFTERNOON");
+    Event* evening = create_event("EVENING");
 
     morning->next = noon;
     noon->next = afternoon;
@@ -114,29 +145,6 @@ void delete_events(Event* event) {
         ptr = temp;
     }
 }
-
-//heroine functions
-Heroine* initialize_heroines() {
-    Heroine* heroine_list = (Heroine*) malloc(sizeof(Heroine) * HEROINE_AMT);
-    for (int i=0; i<HEROINE_AMT; i++) {
-        heroine_list[i].love_meter = 0;
-
-    }
-
-    //create the heroines here
-    strncpy(heroine[0].name, "Andre", MAX_STRLEN);
-    heroine[
-    
-
-
-    return heroine_list;
-
-}
-
-void delete_heroines(Heroine* heroine_list) {
-    free(heroine_list);
-}
-
 //dialogue functions
 
 Dialogue* create_dialogue() {
@@ -152,45 +160,49 @@ Choice* create_choice() {
     return choice;
 }
 
-Dialogue** initialize_dialogues() {
+Dialogue** initialize_dialogues(char* heroine_name) {
     //initialize a dialogue list of size 50 through malloc()
+
     Dialogue** dialogue_list = (Dialogue**) malloc(sizeof(Dialogue*) * 50);
 
-    //sample:
-    Dialogue* dialogue;
-    Choice* choices[2];
+    if (strcmp(heroine_name, "Andre") == 0) {
 
-    dialogue = create_dialogue();
-    dialogue->choices[0] = create_choice();
-    dialogue->choices[1] = create_choice();
-    //instead of dialogue->text = "hallo senpai, uwuwuwuwu";
-    //do:
-    
-    //set dialogue text
-    strncpy(dialogue->text, "hallo senpai, uwuwuwuwu", MAX_STRLEN);
+        //sample:
+        Dialogue* dialogue;
+        Choice* choices[2];
 
-    //set choices text
-    strncpy(dialogue->choices[0]->text, "sup homie", MAX_STRLEN);
-    strncpy(dialogue->choices[1]->text, "nah idk you", MAX_STRLEN);
+        dialogue = create_dialogue();
+        dialogue->choices[0] = create_choice();
+        dialogue->choices[1] = create_choice();
+        //instead of dialogue->text = "hallo senpai, uwuwuwuwu";
+        //do:
+        
+        //set dialogue text
+        strncpy(dialogue->text, "hallo senpai, uwuwuwuwu", MAX_STRLEN);
 
+        //set choices text
+        strncpy(dialogue->choices[0]->text, "sup homie", MAX_STRLEN);
+        strncpy(dialogue->choices[1]->text, "nah idk you", MAX_STRLEN);
 
-    //set to dialogue list
-    dialogue_list[0] = dialogue;
+        dialogue->choices[0]->intimacy_gain = 20;
+        dialogue->choices[1]->intimacy_gain = -20;
 
-    //link these dialogues to the choices
-    dialogue = create_dialogue();
+        //set to dialogue list
+        dialogue_list[0] = dialogue;
 
-    strncpy(dialogue->text, "eyoo sup bows", MAX_STRLEN);
-    dialogue_list[0]->choices[0]->next = dialogue;
-    
-    dialogue = create_dialogue();
+        //link these dialogues to the choices
+        dialogue = create_dialogue();
 
-    strncpy(dialogue->text, "oa", MAX_STRLEN);
-    dialogue_list[0]->choices[1]->next = dialogue;
+        strncpy(dialogue->text, "eyoo sup bows", MAX_STRLEN);
+        dialogue_list[0]->choices[0]->next = dialogue;
+        
+        dialogue = create_dialogue();
 
-    //set choice gains 
-    dialogue->choices[0]->intimacy_gain = 20;
-    dialogue->choices[1]->intimacy_gain = -20;
+        strncpy(dialogue->text, "oa", MAX_STRLEN);
+        dialogue_list[0]->choices[1]->next = dialogue;
+
+        //set choice gains 
+    }
 
     return dialogue_list;
 }
@@ -203,20 +215,22 @@ int use_dialogue(Heroine* heroine, Dialogue* dialogue) {
 
     gain = 0;
 
+    printf("%s: %s\n", heroine->name, dialogue->text);
+
     if (dialogue->choices[0] != NULL && dialogue->choices[1]  != NULL) {
 
-        printf("%s: %s\n", heroine->name, dialogue->text);
-        printf("X: %s\n", dialogue->choice[0]->text);
-        printf("Y: %s\n", dialogue->choice[1]->text);
+        printf("X: %s\n", dialogue->choices[0]->text);
+        printf("Y: %s\n\n", dialogue->choices[1]->text);
+        printf("choice: ");
         scanf("%c", &input);
 
         switch (tolower(input)) {
             case 'x':
-                choice = dialogue->choice[0];
+                choice = dialogue->choices[0];
                 break;
 
             case 'y':
-                choice = dialogue->choice[1];
+                choice = dialogue->choices[1];
                 //use_dialogue(heroine, dialogue->choice[1]->dialogue);
                 break;
 
@@ -226,48 +240,92 @@ int use_dialogue(Heroine* heroine, Dialogue* dialogue) {
         }
 
         if (choice != NULL) {
-            gain = gain + useDialogue(heroine, choice->dialogue);
+            gain = gain + use_dialogue(heroine, choice->next);
+
         }
         else {
             printf("input does not match any of the choices.");
-            gain = gain + useDialogue(heroine, dialogue);
+            gain = gain + use_dialogue(heroine, dialogue);
         }
     }
 
     return gain;
 }
 
-void condition_handler(Event* event) {
+
+//heroine functions
+Heroine* initialize_heroines() {
+    Heroine* heroine_list = (Heroine*) malloc(sizeof(Heroine) * HEROINE_AMT);
+    for (int i=0; i<HEROINE_AMT; i++) {
+        heroine_list[i].intimacy = 20;
+
+    }
+
+    //create the heroines here
+    strncpy(heroine_list[0].name, "Andre", MIN_STRLEN);
+    heroine_list[0].dialogue_list = initialize_dialogues(heroine_list[0].name);
+
+
+    return heroine_list;
+
+}
+
+void delete_heroines(Heroine* heroine_list) {
+    for (int i=0; i<HEROINE_AMT; i++) {
+        free(heroine_list[i].dialogue_list);
+    }
+
+    free(heroine_list);
+
+}
+
+void converse(Heroine* heroine, int dialogue_index) {
+    heroine->intimacy = heroine->intimacy + use_dialogue(heroine, heroine->dialogue_list[dialogue_index]);
+    getch();
+    clear();
+}
+
+void event_handler(Event* event) {
     if (strcmp(event->heroine->name, "Andre") == 0) {
+
+        converse(event->heroine, 0);
         //collab
-
-
 
     }
 
 }
 
+
 int game() {
 
+    int days; 
+
+    days = 1;
+
     Event* event = initialize_events();
-    heroine_list = initialize_heroines();
+    Heroine* heroine_list = initialize_heroines();
+
 
     while (1==1) {
 
         if (event == NULL) {
             printf("<error>: events not connected\n");
-            return days
+            return days;
         }
         else {
             //randomize both the place and the heroine
             event->place = random_up_to(PLACE_AMT);
-            event->heroine = &heroine_list[random];
+            event->heroine = &heroine_list[random_up_to(HEROINE_AMT)];
         }
 
-
-        condition_handler();
+        char place[MIN_STRLEN];
+        get_str_from_place(event->place, place);
+        printf("%s", event->name);
+        printf("TIME: %s\nPLACE: %s\n", event->name, place);
+        event_handler(event);
 
         event = event->next;
+        days++;
     }
 
 
@@ -277,9 +335,7 @@ int main(){
 
     srand(time(NULL));
 
-    int days;
-
-    days = game();
+    int days = game();
 
     printf("congratulations, you have completed the game in %d days.", days);
 
