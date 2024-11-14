@@ -145,19 +145,24 @@ void delete_events(Event* event) {
         ptr = temp;
     }
 }
-//dialogue functions
 
-Dialogue* create_dialogue() {
+//choice functions
+Choice* create_choice(char* text, int intimacy_gain) {
+    Choice* choice = (Choice*) malloc(sizeof(Choice));
+    strncpy(choice->text, text, MAX_STRLEN);
+    choice->intimacy_gain = intimacy_gain;
+
+    return choice;
+}
+
+//dialogue functions
+//
+Dialogue* create_dialogue(char* text) {
     Dialogue* dialogue = (Dialogue*) malloc(sizeof(Dialogue));
+    strncpy(dialogue->text, text, MAX_STRLEN);
     dialogue->choices[0] = NULL;
     dialogue->choices[1] = NULL;
     return dialogue;
-}
-
-//should probably put this on a separate function group
-Choice* create_choice() {
-    Choice* choice = (Choice*) malloc(sizeof(Choice));
-    return choice;
 }
 
 Dialogue** initialize_dialogues(char* heroine_name) {
@@ -171,37 +176,17 @@ Dialogue** initialize_dialogues(char* heroine_name) {
         Dialogue* dialogue;
         Choice* choices[2];
 
-        dialogue = create_dialogue();
-        dialogue->choices[0] = create_choice();
-        dialogue->choices[1] = create_choice();
-        //instead of dialogue->text = "hallo senpai, uwuwuwuwu";
-        //do:
-        
-        //set dialogue text
-        strncpy(dialogue->text, "hallo senpai, uwuwuwuwu", MAX_STRLEN);
+        dialogue = create_dialogue("hallo senpai, uwwwuwuwuwuw");
+        dialogue->choices[0] = create_choice("sup homie", 20);
+        dialogue->choices[1] = create_choice("nah idk you", -20);
 
-        //set choices text
-        strncpy(dialogue->choices[0]->text, "sup homie", MAX_STRLEN);
-        strncpy(dialogue->choices[1]->text, "nah idk you", MAX_STRLEN);
-
-        dialogue->choices[0]->intimacy_gain = 20;
-        dialogue->choices[1]->intimacy_gain = -20;
-
-        //set to dialogue list
-        dialogue_list[0] = dialogue;
 
         //link these dialogues to the choices
-        dialogue = create_dialogue();
-
-        strncpy(dialogue->text, "eyoo sup bows", MAX_STRLEN);
-        dialogue_list[0]->choices[0]->next = dialogue;
+        dialogue->choices[0]->next = create_dialogue("eyoo sup bows");
+        dialogue->choices[1]->next = create_dialogue("ka oa ba nimo");
         
-        dialogue = create_dialogue();
+        dialogue_list[0] = dialogue;
 
-        strncpy(dialogue->text, "oa", MAX_STRLEN);
-        dialogue_list[0]->choices[1]->next = dialogue;
-
-        //set choice gains 
     }
 
     return dialogue_list;
@@ -215,14 +200,18 @@ int use_dialogue(Heroine* heroine, Dialogue* dialogue) {
 
     gain = 0;
 
+    printf("\n");
+    printf("=============================\n");
+
     printf("%s: %s\n", heroine->name, dialogue->text);
+    printf("=============================\n");
 
     if (dialogue->choices[0] != NULL && dialogue->choices[1]  != NULL) {
 
         printf("X: %s\n", dialogue->choices[0]->text);
         printf("Y: %s\n\n", dialogue->choices[1]->text);
         printf("choice: ");
-        scanf("%c", &input);
+        scanf(" %c", &input);
 
         switch (tolower(input)) {
             case 'x':
@@ -252,22 +241,21 @@ int use_dialogue(Heroine* heroine, Dialogue* dialogue) {
     return gain;
 }
 
-
 //heroine functions
 Heroine* initialize_heroines() {
     Heroine* heroine_list = (Heroine*) malloc(sizeof(Heroine) * HEROINE_AMT);
-    for (int i=0; i<HEROINE_AMT; i++) {
-        heroine_list[i].intimacy = 20;
 
-    }
-
-    //create the heroines here
-    strncpy(heroine_list[0].name, "Andre", MIN_STRLEN);
-    heroine_list[0].dialogue_list = initialize_dialogues(heroine_list[0].name);
-
+    create_heroine(heroine_list, 0, "Andre");
 
     return heroine_list;
 
+}
+
+void create_heroine(Heroine* heroine_list, int index, char* name) {
+    Heroine heroine;
+    strncpy(heroine_list[index].name, name, MIN_STRLEN);
+    heroine_list[index].intimacy = 20;
+    heroine_list[index].dialogue_list = initialize_dialogues(name);
 }
 
 void delete_heroines(Heroine* heroine_list) {
@@ -281,6 +269,7 @@ void delete_heroines(Heroine* heroine_list) {
 
 void converse(Heroine* heroine, int dialogue_index) {
     heroine->intimacy = heroine->intimacy + use_dialogue(heroine, heroine->dialogue_list[dialogue_index]);
+
     getch();
     clear();
 }
@@ -320,7 +309,6 @@ int game() {
 
         char place[MIN_STRLEN];
         get_str_from_place(event->place, place);
-        printf("%s", event->name);
         printf("TIME: %s\nPLACE: %s\n", event->name, place);
         event_handler(event);
 
