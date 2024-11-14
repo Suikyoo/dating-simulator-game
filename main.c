@@ -242,14 +242,6 @@ int use_dialogue(Heroine* heroine, Dialogue* dialogue) {
 }
 
 //heroine functions
-Heroine* initialize_heroines() {
-    Heroine* heroine_list = (Heroine*) malloc(sizeof(Heroine) * HEROINE_AMT);
-
-    create_heroine(heroine_list, 0, "Andre");
-
-    return heroine_list;
-
-}
 
 void create_heroine(Heroine* heroine_list, int index, char* name) {
     Heroine heroine;
@@ -269,9 +261,18 @@ void delete_heroines(Heroine* heroine_list) {
 
 void converse(Heroine* heroine, int dialogue_index) {
     heroine->intimacy = heroine->intimacy + use_dialogue(heroine, heroine->dialogue_list[dialogue_index]);
-
+    printf("(press any character to continue)");
     getch();
     clear();
+}
+
+Heroine* initialize_heroines() {
+    Heroine* heroine_list = (Heroine*) malloc(sizeof(Heroine) * HEROINE_AMT);
+
+    create_heroine(heroine_list, 0, "Andre");
+
+    return heroine_list;
+
 }
 
 void event_handler(Event* event) {
@@ -301,16 +302,19 @@ int game() {
             printf("<error>: events not connected\n");
             return days;
         }
-        else {
-            //randomize both the place and the heroine
-            event->place = random_up_to(PLACE_AMT);
-            event->heroine = &heroine_list[random_up_to(HEROINE_AMT)];
-        }
+
+        //randomize both the place and the heroine
+        event->place = random_up_to(PLACE_AMT);
+        event->heroine = &heroine_list[random_up_to(HEROINE_AMT)];
 
         char place[MIN_STRLEN];
         get_str_from_place(event->place, place);
         printf("TIME: %s\nPLACE: %s\n", event->name, place);
         event_handler(event);
+
+        if (heroine->intimacy >= 100) {
+            return days;
+        }
 
         event = event->next;
         days++;
