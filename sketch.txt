@@ -1,22 +1,38 @@
+TIME:
+    MORNING, (PARK, HOUSE, SCHOOL)
+    NOON, (CAFETERIA, GYM, STUDY_AREA)
+    AFTERNOON, (COFFEE_SHOP, LIBRARY, PLAZA)
+    EVENING, (HOUSE, MALL, ARCADE, CINEMA)
 
 
-events are basically time slot of the day
-there would be the following static events:
-breakfast(optional) , morning-classes, lunch, afternoon-classes, class-end activity
 
+EVENT:
+    TIME: (cycle)
+    PLACE:
+    GIRL:
 
-struct Event: //////
-    Place(Enum) place : #i.e basketball court, football, canteen
-    Heroine(struct) girl : #enum with the girls as choices
-    Event(struct) next : 
+GIRLS:
 
+    IKYM: VOLLEYBALL_PLAYER
+    CZARINAH: PAINTER
+    DIANE: ACCT_STUDENT 
+    ANDRE: PSYCH_STUDENT 
+    JOLINA: LAW_STUDENT
 
-struct Dialogue:
-    char text[200];
-    Dialogue(struct) choices[3];
+EVENT(example):
+    MORNING:
+            PSYCH_STUDENT:
+                create_dialogue("Nahulog ang mga libro ko omg")
+                reply[0] = create_reply("here let me help help you", 20)
+                reply[1] = create_reply("bahala ka dra", -100)
 
+    MORNING:
+            PSYCH_STUDENT:
+                PARK:
+                    create_dialogue("pant*pant*, Haah it's so exhausting")
 
-heroine_list = #array containing the structs for the heroine
-a newly entered Event, randomizes the Place as well as the pointer to its heroine
-heroines are randomized by randomizing a number between 0-2 (inclusive) and getting the pointer inside the herone_list using the index that is randomized(0-2)
+notes:
 
+    dialogues: girls
+    reply: user
+                

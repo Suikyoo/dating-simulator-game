@@ -345,23 +345,32 @@ Dialogue** initialize_dialogues(char* heroine_name) {
 
     Dialogue** dialogue_list = (Dialogue**) malloc(sizeof(Dialogue*) * 50);
 
-    Dialogue* dialogue;
+    Dialogue* current_dialogue;
+    Dialogue* prev_dialogue;
     Choice* choices[2];
 
     if (strcmp(heroine_name, "Andre") == 0) {
 
         //sample:
 
-        dialogue = create_dialogue("hallo senpai, uwwwuwuwuwuw");
+        current_dialogue = create_dialogue("hallo senpai, uwwwuwuwuwuw");
         dialogue->choices[0] = create_choice("sup homie", 20);
         dialogue->choices[1] = create_choice("nah idk you", -20);
 
+        dialogue_list[0] = current_dialogue;
+
+        prev_dialogue = current_dialogue;
+
+        current_dialogue = create_dialogue("eyoo sup bows");
+        current_dialogue->choices[0] = create_choice("shut the fok up");
+        current_dialogue->choices[1] = create_choice("eyoooo ");
+
+        prev_dialogue->choice[0]->next = current_dialogue;
 
         //link these dialogues to the choices
-        dialogue->choices[0]->next = create_dialogue("eyoo sup bows");
+        dialogue->choices[0]->next = 
         dialogue->choices[1]->next = create_dialogue("ka oa ba nimo");
         
-        dialogue_list[0] = dialogue;
 
     }
 
