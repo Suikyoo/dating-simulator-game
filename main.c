@@ -35,7 +35,8 @@ int random_up_to(int value) {
 //event functions
 
 
-void converse(Heroine* heroine, int dialogue_index) {
+void activate_dialogue(Heroine* heroine, int dialogue_index) {
+    printf("%d", heroine->intimacy);
     heroine->intimacy = heroine->intimacy + use_dialogue(heroine, heroine->dialogue_list[dialogue_index]);
     printf("(press any character to continue)");
     getch();
@@ -44,9 +45,16 @@ void converse(Heroine* heroine, int dialogue_index) {
 
 void event_handler(Event* event) {
     if (strcmp(event->heroine->name, "Andre") == 0) {
+        switch (event->heroine->intimacy){
+            case 20:
+                activate_dialogue(event->heroine, 0);
+                break;
+            case 40:
+                activate_dialogue(event->heroine, 1);
+                break;
 
-        converse(event->heroine, 0);
-        //collab
+        }
+        
 
     }
 
@@ -91,7 +99,6 @@ int game() {
 }
 
 int main(){
-
     srand(time(NULL));
 
     int days = game();

@@ -1,38 +1,14 @@
 TIME:
-    MORNING, (PARK, HOUSE, SCHOOL)
-    NOON, (CAFETERIA, GYM, STUDY_AREA)
-    AFTERNOON, (COFFEE_SHOP, LIBRARY, PLAZA)
-    EVENING, (HOUSE, MALL, ARCADE, CINEMA)
-
-
-
-EVENT:
-    TIME: (cycle)
-    PLACE:
-    GIRL:
+    MORNING, (PARK, SCHOOL)
+    NOON, (CAFETERIA, STUDY_AREA)
+    AFTERNOON, (COFFEE_SHOP, LIBRARY)
+    EVENING, (MALL, ARCADE)
 
 GIRLS:
+    
+    IKYM & DIANE
 
-    IKYM: VOLLEYBALL_PLAYER
-    CZARINAH: PAINTER
-    DIANE: ACCT_STUDENT 
-    ANDRE: PSYCH_STUDENT 
-    JOLINA: LAW_STUDENT
+    JOLINA & CZARINAH
 
-EVENT(example):
-    MORNING:
-            PSYCH_STUDENT:
-                create_dialogue("Nahulog ang mga libro ko omg")
-                reply[0] = create_reply("here let me help help you", 20)
-                reply[1] = create_reply("bahala ka dra", -100)
+    ANDRE & AKO (IKAW NLNG GUD DRE)
 
-    MORNING:
-            PSYCH_STUDENT:
-                PARK:
-                    create_dialogue("pant*pant*, Haah it's so exhausting")
-
-notes:
-
-    dialogues: girls
-    reply: user
-                

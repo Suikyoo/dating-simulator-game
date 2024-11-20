@@ -4,30 +4,33 @@
 
 
 struct Dialogue;
-struct Choice;
 
 typedef struct Dialogue Dialogue;
-typedef struct Choice Choice;
 
+#include "conio.h"
 #include "constants.h"
 #include "heroine.h"
 
 struct Dialogue {
-    char text[MAX_STRLEN];
-    Choice* choices[2];
-
-
-};
-
-struct Choice {
-    char text[MAX_STRLEN];
     int intimacy_gain;
-    Dialogue* next;
+
+    char text[MAX_STRLEN];
+    char choices[2][MAX_STRLEN];
+    Dialogue* parent_dialogue;
+    Dialogue* child_dialogues[2];
+
+
+
 };
 
-
-Choice* create_choice(char* text, int intimacy_gain);
 Dialogue* create_dialogue(char* text);
+
+void append_dialogue(Dialogue* parent_dialogue, int i, char* text);
+void next_dialogue(Dialogue** dialogue, int i);
+void prev_dialogue(Dialogue** dialogue);
+
+void create_choice(Dialogue* dialogue, int i, char* text);
+
 Dialogue** initialize_dialogues(char* heroine_name);
 int use_dialogue(Heroine* heroine, Dialogue* dialogue);
 
