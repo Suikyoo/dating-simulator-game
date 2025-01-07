@@ -7,6 +7,8 @@ struct Dialogue;
 
 typedef struct Dialogue Dialogue;
 
+extern int columns;
+
 #include "conio.h"
 #include "constants.h"
 #include "heroine.h"

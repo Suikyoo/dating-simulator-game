@@ -27,6 +27,7 @@ Heroine* initialize_heroines() {
 
     create_heroine(heroine_list, 0, "Mio");
     create_heroine(heroine_list, 1, "Azure");
+    create_heroine(heroine_list, 2, "Nadia");
 
     return heroine_list;
 

@@ -9,9 +9,9 @@ typedef enum PLACE PLACE;
 typedef enum STATUS STATUS;
 
 enum PLACE {
+    SCHOOL,
     CAFETERIA,
-    PLAZA,
-    HOUSE,
+    PARK,
     PLACE_AMT
 
 };

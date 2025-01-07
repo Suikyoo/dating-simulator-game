@@ -13,12 +13,12 @@ void get_str_from_place(int place, char* string) {
             strncpy(string, "CAFETERIA", MIN_STRLEN);
             break;
 
-        case PLAZA:
+        case PARK:
             strncpy(string, "PLAZA", MIN_STRLEN);
             break;
 
-        case HOUSE:
-            strncpy(string, "HOUSE", MIN_STRLEN);
+        case SCHOOL:
+            strncpy(string, "SCHOOL", MIN_STRLEN);
             break;
 
         default:
