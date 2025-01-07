@@ -10,7 +10,7 @@ void create_heroine(Heroine* heroine_list, int index, char* name) {
     strncpy(heroine_list[index].name, name, MIN_STRLEN);
     heroine_list[index].intimacy = 20;
     heroine_list[index].dialogue_list = initialize_dialogues(name);
-    heroine_list[index].images = initialize_images(name);
+    heroine_list[index].images = intialize_images(name);
 }
 
 void delete_heroines(Heroine* heroine_list) {
@@ -26,9 +26,21 @@ Heroine* initialize_heroines() {
     Heroine* heroine_list = (Heroine*) malloc(sizeof(Heroine) * HEROINE_AMT);
 
     create_heroine(heroine_list, 0, "Mio");
-    create_heroine(heroine_list, 1, "Azure");
 
     return heroine_list;
+
+}
+
+char* initialize_images(char* heroine_name) {
+    char** images = (char**) malloc(sizeof(char*) * 3);
+
+    //ayw nlg pangutana, basta 1320 na
+    images[0] = (char*) malloc(sizeof(char) * 1320);
+    strncpy(images[0], "uwu", 1320);
+
+
+    //wip
+
 
 }
 

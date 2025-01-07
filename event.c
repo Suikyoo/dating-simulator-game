@@ -40,7 +40,6 @@ Event* initialize_events() {
     afternoon->next = evening;
     evening->next = morning;
 
-    //chain it
 
     return morning;
 

@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <conio.h>
 #include <string.h>
+#include <locale.h>
 
 #include "constants.h"
 #include "enums.h"
@@ -14,11 +14,6 @@
 
 
 
-//clrscr function
-
-void clear() {
-    printf("\033[H\033[J");
-}
 
 //randomizer functions
 
@@ -35,22 +30,37 @@ int random_up_to(int value) {
 //event functions
 
 
-void activate_dialogue(Heroine* heroine, int dialogue_index) {
+void activate_dialogue(Heroine* heroine, int dialogue_index, char* header_str) {
     printf("%d", heroine->intimacy);
-    heroine->intimacy = heroine->intimacy + use_dialogue(heroine, heroine->dialogue_list[dialogue_index]);
+    printf("\n");
+    heroine->intimacy = heroine->intimacy + use_dialogue(heroine, heroine->dialogue_list[dialogue_index], header_str);
     printf("(press any character to continue)");
     getch();
-    clear();
 }
 
-void event_handler(Event* event) {
-    if (strcmp(event->heroine->name, "Andre") == 0) {
+void event_handler(Event* event, char* header_str) {
+    if (strcmp(event->heroine->name, "Mio") == 0) {
         switch (event->heroine->intimacy){
+            //kada case is condition ni sa intimacy
+            //i.e. case 0 -> if (intimacy == 0)
+
+            case 0:
+                activate_dialogue(event->heroine, 5, header_str);
+                break;
             case 20:
-                activate_dialogue(event->heroine, 0);
+                activate_dialogue(event->heroine, 0, header_str);
                 break;
             case 40:
-                activate_dialogue(event->heroine, 1);
+                activate_dialogue(event->heroine, 1, header_str);
+                break;
+			case 60:
+				activate_dialogue(event->heroine, 2, header_str);
+				break;
+			case 80:
+				activate_dialogue(event->heroine, 3, header_str);
+                break;
+			case 100:
+				activate_dialogue(event->heroine, 4, header_str);
                 break;
 
         }
@@ -58,10 +68,35 @@ void event_handler(Event* event) {
 
     }
 
+    else if (strcmp(event->heroine->name, "Azure") == 0) {
+        switch (event->heroine->intimacy){
+            case 0:
+                //ending dialogue
+            case 20:
+                activate_dialogue(event->heroine, 0, header_str);
+                break;
+            case 40:
+                activate_dialogue(event->heroine, 1, header_str);
+                break;
+            case 60:
+                activate_dialogue(event->heroine, 2, header_str);
+                break;
+            case 80:
+                activate_dialogue(event->heroine, 3, header_str);
+                break;
+            case 100:
+                activate_dialogue(event->heroine, 4, header_str);
+                break;
+            //case 60... and so on
+        }
+        
+    }
+
+
 }
 
 
-int game() {
+void game() {
 
     int days; 
 
@@ -75,7 +110,7 @@ int game() {
 
         if (event == NULL) {
             printf("<error>: events not connected\n");
-            return days;
+            return;
         }
 
         //randomize both the place and the heroine
@@ -83,28 +118,56 @@ int game() {
         event->heroine = &heroine_list[random_up_to(HEROINE_AMT)];
 
         char place[MIN_STRLEN];
-        get_str_from_place(event->place, place);
-        printf("TIME: %s\nPLACE: %s\n", event->name, place);
-        event_handler(event);
 
-        if (event->heroine->intimacy >= 100) {
-            return days;
+        char header_str[MAX_STRLEN];
+        get_str_from_place(event->place, place);
+        sprintf(header_str, "TIME: %s\nPLACE: %s\n", event->name, place);
+
+
+        if (event->heroine->intimacy > 100) {
+            printf("congratulations, you have completed the game in %d day", days);
+
+            if (days > 1) {
+                printf("s.");
+            }
+            else {
+                printf(".");
+            }
+
+            return;
         }
 
+        if (event->heroine->intimacy < 0) {
+            printf("stupid loser! Better luck next time nyenye, you lost in %d day", days);
+
+            if (days > 1) {
+                printf("s.");
+            }
+            else {
+                printf(".");
+            }
+
+            return;
+        }
+
+        event_handler(event, header_str);
+        system("cls");
         event = event->next;
-        days++;
+        if (strncmp(event->name, "MORNING", MIN_STRLEN) == 0) {
+            days++;
+        }
     }
 
 
 }
 
 int main(){
+    setlocale(LC_ALL, "en_US.UTF-8");
     srand(time(NULL));
 
-    int days = game();
+    game();
 
-    printf("congratulations, you have completed the game in %d days.", days);
-
+    getch();
     return 0;
 
 }

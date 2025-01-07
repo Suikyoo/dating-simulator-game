@@ -14,6 +14,8 @@ struct Heroine {
     int intimacy;
 
     Dialogue** dialogue_list;
+    char** images;
+
     STATUS status;
 
 };
@@ -22,5 +24,6 @@ struct Heroine {
 void create_heroine(Heroine* heroine_list, int index, char* name);
 void delete_heroines(Heroine* heroine_list);
 Heroine* initialize_heroines();
+char** initialize_images(char* heroine_name);
 
 #endif
